@@ -1,6 +1,4 @@
-import importlib
-import sys
-import time
+import csv
 
 
 def count_character_lines(character_name):
@@ -40,19 +38,25 @@ def find_all_character_name():
     return character_name_list
 
 
-def show_character_statistic(character_name):
+def write_character_statistic(character_name):
     lines = count_character_lines(character_name)
     words = count_character_word(character_name)
 
     if lines > 100:
-        print(character_name
-              + ' 的全剧台词段数为： ' + str(lines)
-              + '    ，全剧台词字数为： ' + str(words)
-              + '    ，段均字数为：' + str(words/lines))
+        row = (character_name, lines, words, words/lines)
+        with open('statistic.csv', 'a') as f:
+            writer = csv.writer(f)
+            writer.writerow(row)
+            f.close()
 
 
 if __name__ == '__main__':
-    # for name in find_all_character_name():
-    #     show_character_statistic(name)
-    print('test')
+    headers = ['角色名', '全剧台词段数', '全剧台词字数', '段均字数']
+    with open('statistic.csv', 'w') as f:
+        writer = csv.writer(f)
+        writer.writerow(headers)
+        f.close()
+
+    for name in find_all_character_name():
+        write_character_statistic(name)
 
