@@ -50,32 +50,43 @@ def write_character_statistic(character_name, file_name):
             f.close()
 
 
-# 角色对话量，对于连续的四段台词 A B C D，如果 A C 为同一角色，B D 为同一角色，则增加对话量指数
+# 角色对话量，对于连续的四段台词 A B C D，如果 A C 为同一角色，B D 为同一角色，则视作一次对话
 def character_communication(character_name1, character_name2):
-    communication_amount = 0
+    # lines 为实际对话段数
+    communication_lines = 0
+    # index 为交流指数，连续的对话可以呈叠加效果，迅速提升交流指数
+    communication_index = 0
     with open('script.txt') as temp_f:
         datafile = temp_f.readlines()
     name_list = [character_name1, character_name2]
     successive_line = 0
+    successive_communication = 0
     for line in datafile:
         if not line.isspace():
             name = name_list[successive_line % 2]
             if line[0:len(name) + 1] == name + '：':
                 successive_line += 1
+                if successive_communication > 0:
+                    communication_index += successive_communication
                 if successive_line == 4:
                     successive_line = 0
-                    communication_amount += 1
+                    communication_lines += 2
+                    communication_index += 1
+                    successive_communication += 1
             else:
                 successive_line = 0
+                successive_communication = 0
         else:
             continue
 
-    return communication_amount
+    return [communication_lines, communication_index]
 
 
 def write_character_communication(character_name1, character_name2, file_name):
-    communication = character_communication(character_name1, character_name2)
-    row = (character_name1, character_name2, communication)
+    communication = character_communication(character_name1, character_name2)[0]
+    index = character_communication(character_name1, character_name2)[1]
+
+    row = (character_name1, character_name2, communication, index)
     with open(file_name, 'a') as f:
         writer = csv.writer(f)
         writer.writerow(row)
@@ -92,7 +103,7 @@ if __name__ == '__main__':
     # for name in find_all_character_name():
     #     write_character_statistic(name, 'lines_statistic.csv')
 
-    headers = ['交流发起者', '交流应答者', '交流量']
+    headers = ['交流发起者', '交流应答者', '交流台词段数', '互动指数']
     with open('communication_statistic.csv', 'w') as f:
         writer = csv.writer(f)
         writer.writerow(headers)
@@ -107,7 +118,7 @@ if __name__ == '__main__':
 
     name_index = 0
     for name in main_character_list:
-        sub_list = main_character_list[name_index+1:len(main_character_list)]
+        sub_list = main_character_list[name_index + 1:len(main_character_list)]
         for responder in sub_list:
             write_character_communication(name, responder, 'communication_statistic.csv')
         name_index += 1
