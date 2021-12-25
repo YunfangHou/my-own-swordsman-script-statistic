@@ -117,6 +117,17 @@ def whole_test_of_communication():
         name_index += 1
 
 
+def single_character_communication_with_main_character(name):
+    headers = ['角色一', '角色二', '交流台词段数', '互动指数']
+    file_name = name + '_communication.csv'
+    with open(file_name, 'w') as f:
+        writer = csv.writer(f)
+        writer.writerow(headers)
+        f.close()
+    for main_character_name in ['邢育森', '佟湘玉', '白展堂', '吕秀才', '莫小贝', '郭芙蓉', '李大嘴', '燕小六', '祝无双', '杨蕙兰', '柳星雨']:
+        write_character_communication(name, main_character_name, file_name)
+
+
 if __name__ == '__main__':
     # headers = ['角色名', '全剧台词段数', '全剧台词字数', '段均字数']
     # with open('lines_statistic.csv', 'w') as f:
@@ -127,10 +138,5 @@ if __name__ == '__main__':
     # for name in find_all_character_name():
     #     write_character_statistic(name, 'lines_statistic.csv')
 
-
-
-    whole_test_of_communication()
-
-
-
-
+    # whole_test_of_communication()
+    single_character_communication_with_main_character('李大嘴')
