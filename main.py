@@ -66,11 +66,12 @@ def character_communication(character_name1, character_name2):
             name = name_list[successive_line % 2]
             if line[0:len(name) + 1] == name + '：':
                 successive_line += 1
-                if successive_communication > 0:
+                if successive_communication >= 0:
                     communication_index += successive_communication
+                    if successive_line % 2 == 0:
+                        communication_lines += 2
                 if successive_line == 4:
                     successive_line = 0
-                    communication_lines += 2
                     communication_index += 1
                     successive_communication += 1
             else:
@@ -79,6 +80,7 @@ def character_communication(character_name1, character_name2):
         else:
             continue
 
+    communication_lines = (int)((communication_lines + 1) / 2)
     return [communication_lines, communication_index]
 
 
@@ -93,17 +95,8 @@ def write_character_communication(character_name1, character_name2, file_name):
         f.close()
 
 
-if __name__ == '__main__':
-    # headers = ['角色名', '全剧台词段数', '全剧台词字数', '段均字数']
-    # with open('lines_statistic.csv', 'w') as f:
-    #     writer = csv.writer(f)
-    #     writer.writerow(headers)
-    #     f.close()
-    #
-    # for name in find_all_character_name():
-    #     write_character_statistic(name, 'lines_statistic.csv')
-
-    headers = ['交流发起者', '交流应答者', '交流台词段数', '互动指数']
+def whole_test_of_communication():
+    headers = ['角色一', '角色二', '交流台词段数', '互动指数']
     with open('communication_statistic.csv', 'w') as f:
         writer = csv.writer(f)
         writer.writerow(headers)
@@ -122,3 +115,22 @@ if __name__ == '__main__':
         for responder in sub_list:
             write_character_communication(name, responder, 'communication_statistic.csv')
         name_index += 1
+
+
+if __name__ == '__main__':
+    # headers = ['角色名', '全剧台词段数', '全剧台词字数', '段均字数']
+    # with open('lines_statistic.csv', 'w') as f:
+    #     writer = csv.writer(f)
+    #     writer.writerow(headers)
+    #     f.close()
+    #
+    # for name in find_all_character_name():
+    #     write_character_statistic(name, 'lines_statistic.csv')
+
+
+
+    whole_test_of_communication()
+
+
+
+
